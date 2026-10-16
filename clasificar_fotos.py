@@ -2,6 +2,7 @@
 """Clasifica fotos como explicitas / no explicitas y las organiza por fecha de captura."""
 
 import sys
+import shlex
 import shutil
 from pathlib import Path
 from datetime import datetime
@@ -38,6 +39,25 @@ def obtener_fecha_foto(ruta: Path) -> datetime:
     return datetime.fromtimestamp(ruta.stat().st_mtime)
 
 
+def limpiar_ruta_ingresada(texto: str) -> str:
+    """Acepta rutas entre comillas o arrastradas a la terminal (con espacios escapados)."""
+    texto = texto.strip()
+    if not texto:
+        return texto
+    if sys.platform != "win32":
+        # En Mac/Linux, arrastrar una carpeta a la Terminal escapa los espacios ("Mis\ Fotos").
+        try:
+            partes = shlex.split(texto)
+            if len(partes) == 1:
+                return partes[0]
+        except ValueError:
+            pass
+    # En Windows "Copiar como ruta" agrega comillas dobles.
+    if len(texto) >= 2 and texto[0] == texto[-1] and texto[0] in "\"'":
+        texto = texto[1:-1]
+    return texto
+
+
 def ruta_destino_sin_colision(destino: Path) -> Path:
     if not destino.exists():
         return destino
@@ -53,19 +73,20 @@ def ruta_destino_sin_colision(destino: Path) -> Path:
 def main():
     print("=== Clasificador de fotos (explicito / no explicito) ===\n")
 
-    origen = input("Ruta de la carpeta con las fotos a clasificar: ").strip()
+    # La carpeta puede venir como argumento (al soltarla sobre el lanzador) o arrastrada a la consola.
+    if len(sys.argv) > 1:
+        origen = sys.argv[1]
+    else:
+        origen = limpiar_ruta_ingresada(input("Arrastra aca la carpeta con las fotos y presiona Enter: "))
     origen_path = Path(origen).expanduser().resolve()
     if not origen_path.is_dir():
         print(f"La ruta '{origen_path}' no es una carpeta valida.")
         sys.exit(1)
 
-    destino_default = origen_path.parent / f"{origen_path.name}_clasificado"
-    destino = input(f"Carpeta destino [{destino_default}]: ").strip()
-    destino_path = Path(destino).expanduser().resolve() if destino else destino_default
-
-    if destino_path == origen_path or origen_path in destino_path.parents:
-        print("La carpeta destino no puede ser la misma carpeta de origen ni estar dentro de ella.")
-        sys.exit(1)
+    # El destino se crea al lado de la carpeta de origen, con el sufijo "_clasificado".
+    destino_path = origen_path.parent / f"{origen_path.name}_clasificado"
+    print(f"Carpeta de origen:  {origen_path}")
+    print(f"Carpeta de destino: {destino_path}")
 
     print("\nBuscando imagenes...")
     imagenes = [

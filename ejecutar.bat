@@ -11,7 +11,7 @@ if not exist venv_windows\Scripts\activate.bat (
 )
 
 call venv_windows\Scripts\activate.bat
-python clasificar_fotos.py
+python clasificar_fotos.py %*
 
 echo.
 pause

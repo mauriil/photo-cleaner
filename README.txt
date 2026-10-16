@@ -73,20 +73,19 @@ instalarlo manualmente desde https://www.python.org/downloads/
 
 PASO 3 - Usar el programa (cada vez que quieras clasificar fotos)
 ----------------------------------------------------------------------
-1. Haz doble clic en "ejecutar.bat"
-2. Te va a preguntar la ruta de la carpeta con las fotos a
-   clasificar. Por ejemplo:
-      D:\FotosMezcladas
-   (podes copiar la ruta desde la barra de direcciones del
-   Explorador de Windows)
-3. Te va a proponer una carpeta destino por defecto, podes aceptarla
-   apretando Enter, o escribir otra ruta.
-4. Te muestra cuantas fotos encontro y pide confirmacion (escribi
+1. Arrastra la carpeta con las fotos y soltala sobre "ejecutar.bat".
+   (Tambien podes hacer doble clic en "ejecutar.bat" y pegar la
+   ruta de la carpeta, por ejemplo D:\FotosMezcladas, copiandola
+   de la barra de direcciones del Explorador de Windows.)
+2. Las fotos clasificadas van a una carpeta nueva al lado de la
+   original, con el mismo nombre y "_clasificado" al final
+   (por ejemplo D:\FotosMezcladas_clasificado).
+3. Te muestra cuantas fotos encontro y pide confirmacion (escribi
    "s" y Enter para continuar).
-5. Va a ir clasificando cada foto. La primera vez que corras el
+4. Va a ir clasificando cada foto. La primera vez que corras el
    programa va a descargar el modelo de IA (unos 24 MB), despues
    ya queda guardado en la PC y no se vuelve a descargar.
-6. Al terminar te muestra un resumen: cuantas fotos fueron a cada
+5. Al terminar te muestra un resumen: cuantas fotos fueron a cada
    categoria.
 
 
@@ -121,3 +120,31 @@ Problemas comunes
 - Windows Defender u otro antivirus tarda mucho o marca el archivo:
   es un falso positivo comun con paquetes de IA (TensorFlow), es
   seguro, podes permitirlo si el antivirus te lo pide.
+
+
+=========================================================
+ USO EN MAC
+=========================================================
+Instalacion (una sola vez, desde la Terminal en esta carpeta;
+requiere "uv": brew install uv):
+
+  uv venv --python 3.12 .venv
+  uv pip install --python .venv/bin/python -r requirements.txt
+
+Uso (la forma mas facil): arrastra la carpeta con fotos desde
+Finder y soltala sobre el icono "Clasificar Fotos.app". Se abre la
+Terminal, te pide confirmar con "s" y listo.
+
+Las fotos clasificadas quedan en una carpeta nueva al lado de la
+original, con el mismo nombre y "_clasificado" al final (por
+ejemplo "Vacaciones" -> "Vacaciones_clasificado").
+
+La primera vez macOS puede pedir permiso para que la app controle
+la Terminal: acepta. Si dice que la app no se puede abrir, clic
+derecho sobre ella -> Abrir -> Abrir.
+
+Alternativa: doble clic en "ejecutar.command" y arrastra la
+carpeta a la ventana de la Terminal.
+
+En Windows tambien podes soltar la carpeta directamente sobre
+"ejecutar.bat".
