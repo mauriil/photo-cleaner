@@ -125,8 +125,10 @@ def main():
 
         fecha = obtener_fecha_foto(ruta)
         subcarpeta_fecha = f"{fecha.year:04d}/{fecha.year:04d}-{fecha.month:02d}"
+        # Se conserva la subcarpeta de origen (ej. "Camara NIKON") dentro de cada categoria.
+        subcarpeta_origen = ruta.parent.relative_to(origen_path)
 
-        carpeta_destino_final = destino_path / categoria / subcarpeta_fecha
+        carpeta_destino_final = destino_path / categoria / subcarpeta_origen / subcarpeta_fecha
         carpeta_destino_final.mkdir(parents=True, exist_ok=True)
 
         destino_archivo = ruta_destino_sin_colision(carpeta_destino_final / ruta.name)

@@ -1,5 +1,5 @@
 =========================================================
- CLASIFICADOR DE FOTOS - Guia paso a paso para Windows
+ CLASIFICADOR DE FOTOS - Guia paso a paso (Windows y Mac)
 =========================================================
 
 Que hace este programa
@@ -12,8 +12,12 @@ analiza cada una con un modelo de IA que corre en tu propia PC
   no_explicito/      -> el resto de las fotos
   revisar_manual/    -> casos dudosos que conviene revisar a mano
 
-Dentro de cada una de esas carpetas, las ordena por fecha de la
-foto: AAAA/AAAA-MM/ (por ejemplo 2023/2023-07/).
+Dentro de cada una de esas carpetas se mantienen las subcarpetas
+originales y, dentro de ellas, las fotos se ordenan por fecha:
+AAAA/AAAA-MM/ (por ejemplo Camara/2023/2023-07/).
+
+
+(Si usas Mac, saltea a la seccion "USO EN MAC" al final.)
 
 
 Que archivos tenes que copiar al pendrive
@@ -125,26 +129,77 @@ Problemas comunes
 =========================================================
  USO EN MAC
 =========================================================
-Instalacion (una sola vez, desde la Terminal en esta carpeta;
-requiere "uv": brew install uv):
+En Mac se usa toda la carpeta del proyecto tal cual (no hace
+falta el pendrive ni los .bat). Lo importante:
 
-  uv venv --python 3.12 .venv
-  uv pip install --python .venv/bin/python -r requirements.txt
+  - "Clasificar Fotos.app" y "ejecutar.command" tienen que quedar
+    DENTRO de esta carpeta, junto a "clasificar_fotos.py" y ".venv".
+    Si queres tener la app a mano, crea un alias (clic derecho ->
+    Crear alias) y movelo al Escritorio o arrastralo al Dock.
+    No muevas la app original.
 
-Uso (la forma mas facil): arrastra la carpeta con fotos desde
-Finder y soltala sobre el icono "Clasificar Fotos.app". Se abre la
-Terminal, te pide confirmar con "s" y listo.
+
+PASO 1 - Instalar (una sola vez)
+---------------------------------
+Si en esta carpeta ya existe ".venv" (carpeta oculta; en Finder
+se ve con Cmd+Shift+.), ya esta instalado: salta al Paso 2.
+
+1. Si no tenes "uv", instalalo desde la Terminal:
+       brew install uv
+2. En la Terminal, entra a esta carpeta (escribi "cd ", arrastra
+   la carpeta a la ventana y presiona Enter) y ejecuta:
+       uv venv --python 3.12 .venv
+       uv pip install --python .venv/bin/python -r requirements.txt
+   Necesita internet y puede tardar varios minutos.
+
+
+PASO 2 - Clasificar una carpeta
+---------------------------------
+1. En Finder, arrastra la carpeta con fotos y soltala sobre el
+   icono "Clasificar Fotos.app" (o sobre su alias).
+2. Se abre la Terminal, muestra la carpeta de origen, la de
+   destino y cuantas fotos encontro. Escribi "s" y Enter.
+3. Al terminar muestra el resumen. Presiona una tecla y cerra la
+   ventana de la Terminal.
 
 Las fotos clasificadas quedan en una carpeta nueva al lado de la
-original, con el mismo nombre y "_clasificado" al final (por
-ejemplo "Vacaciones" -> "Vacaciones_clasificado").
+original, con el mismo nombre y "_clasificado" al final:
 
-La primera vez macOS puede pedir permiso para que la app controle
-la Terminal: acepta. Si dice que la app no se puede abrir, clic
-derecho sobre ella -> Abrir -> Abrir.
+  Vacaciones/               <- queda sin las fotos que se movieron
+      Playa/
+  Vacaciones_clasificado/
+      no_explicito/2023/2023-07/...        <- fotos sueltas de Vacaciones
+      no_explicito/Playa/2023/2023-07/...  <- fotos de la subcarpeta Playa
+      explicito/...
+      revisar_manual/...
 
-Alternativa: doble clic en "ejecutar.command" y arrastra la
-carpeta a la ventana de la Terminal.
+Alternativa sin la app: doble clic en "ejecutar.command",
+arrastra la carpeta a la ventana de la Terminal y presiona Enter.
+
+
+La primera vez
+---------------
+- macOS puede preguntar si "Clasificar Fotos" puede controlar la
+  Terminal: hace clic en "Permitir". Si lo rechazaste por error,
+  habilitalo en Ajustes del Sistema -> Privacidad y seguridad ->
+  Automatizacion.
+- Si dice que la app no se puede abrir porque no se pudo verificar
+  el desarrollador: clic derecho sobre la app -> Abrir -> Abrir.
+- La primera corrida descarga el modelo de IA (unos 24 MB).
+
+
+Hacer una prueba antes de usarlo en serio
+-------------------------------------------
+Como las fotos se MUEVEN, conviene probar primero con una copia:
+
+1. Crea una carpeta nueva, por ejemplo "Prueba", y copia adentro
+   (Cmd+C / Cmd+V, no arrastrar) unas 10-20 fotos variadas.
+2. Solta "Prueba" sobre "Clasificar Fotos.app" y confirma con "s".
+3. Abri "Prueba_clasificado" y revisa que cada foto haya quedado
+   en la categoria y la fecha esperadas.
+4. Si estas conforme, borra "Prueba" y "Prueba_clasificado" y
+   usalo con tus carpetas reales.
+
 
 En Windows tambien podes soltar la carpeta directamente sobre
 "ejecutar.bat".
