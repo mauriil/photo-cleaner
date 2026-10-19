@@ -97,6 +97,7 @@ if errorlevel 1 (
 
 echo.
 echo === Instalacion completa ===
-echo A partir de ahora, para usar el programa hace doble clic en "ejecutar.bat"
+echo A partir de ahora, para el modo Tinder hace doble clic en "ejecutar_web.bat"
+echo Para el modo automatico con IA, usa "ejecutar.bat"
 echo.
 pause

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Clasificar fotos</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <div id="app">
+    <section id="pantalla-setup" class="pantalla">
+      <header class="marca">
+        <p class="eyebrow">Post-consola · lo que queda</p>
+        <h1>La IA ya corrió. Ahora decidís el resto a mano.</h1>
+        <p class="lead">
+          Primero clasificá por consola. Después elegí la carpeta
+          <code>*_clasificado</code> que salió. Este front solo revisa lo pendiente:
+          <strong>explicito</strong> y <strong>revisar_manual</strong>. Las no explícitas
+          ya las resolvió la consola; las podés sumar de una al cúmulo de normales.
+        </p>
+      </header>
+
+      <div class="acciones-legend">
+        <article>
+          <span class="pill pill-keep">Se queda</span>
+          <h3>Normales</h3>
+          <p>Fotos no explícitas que querés conservar. Van a <code>normales/</code></p>
+        </article>
+        <article>
+          <span class="pill pill-apart">Aparte</span>
+          <h3>Explícitas a guardar</h3>
+          <p>Explícitas que sí querés mantener. Van a <code>explicitas_guardar/</code></p>
+        </article>
+        <article>
+          <span class="pill pill-no">Se va</span>
+          <h3>Explícitas a borrar</h3>
+          <p>Explícitas para eliminar después. Van a <code>explicitas_borrar/</code></p>
+        </article>
+      </div>
+
+      <div class="setup-grid">
+        <section class="panel">
+          <h2>1. Carpeta destino (el cúmulo)</h2>
+          <p class="hint">Acá se juntan las fotos de todas las carpetas que vayas revisando.</p>
+          <div class="path-row">
+            <code id="path-destino" class="path-box"></code>
+            <button type="button" class="btn-sec" data-browse="destino">Elegir</button>
+          </div>
+          <ul id="conteos-setup" class="conteos"></ul>
+        </section>
+
+        <section class="panel">
+          <h2>2. Resultado de la consola</h2>
+          <p class="hint">Elegí la carpeta que termina en <code>_clasificado</code>. Si elegís la original, detecto la vecina.</p>
+          <div class="path-row">
+            <code id="path-origen" class="path-box vacio">Todavía no elegiste</code>
+            <button type="button" class="btn-sec" data-browse="origen">Elegir</button>
+          </div>
+          <ul id="resumen-consola" class="conteos" hidden></ul>
+          <label id="label-pasar" class="check" hidden>
+            <input type="checkbox" id="pasar-normales" checked />
+            Sumar las no explícitas de esta corrida al cúmulo de <code>normales/</code>
+          </label>
+          <button type="button" id="btn-empezar" class="btn-pri" disabled>Revisar lo que queda</button>
+          <p id="setup-error" class="error" hidden></p>
+        </section>
+      </div>
+    </section>
+
+    <section id="pantalla-review" class="pantalla" hidden>
+      <header class="topbar">
+        <button type="button" id="btn-cambiar" class="btn-ghost">Cambiar carpeta</button>
+        <div class="progreso">
+          <strong id="texto-progreso">0 / 0</strong>
+          <span id="texto-origen"></span>
+        </div>
+        <button type="button" id="btn-deshacer" class="btn-ghost" disabled>Deshacer</button>
+      </header>
+
+      <div class="deck-wrap">
+        <div id="deck" class="deck">
+          <article id="card" class="card">
+            <img id="foto" alt="Foto a clasificar" draggable="false" />
+            <div id="badge-consola" class="badge-consola" hidden></div>
+            <div class="stamp stamp-keep">SE QUEDA</div>
+            <div class="stamp stamp-apart">APARTE</div>
+            <div class="stamp stamp-no">SE VA</div>
+          </article>
+        </div>
+        <p id="meta-foto" class="meta-foto"></p>
+      </div>
+
+      <div class="controles">
+        <button type="button" class="fab fab-no" data-accion="explicitas_borrar" title="Se va · explícita a borrar">
+          <span>✕</span>
+          <small>Se va</small>
+        </button>
+        <button type="button" class="fab fab-apart" data-accion="explicitas_guardar" title="Aparte · explícita a guardar">
+          <span>★</span>
+          <small>Aparte</small>
+        </button>
+        <button type="button" class="fab fab-keep" data-accion="normales" title="Se queda · foto normal">
+          <span>♥</span>
+          <small>Se queda</small>
+        </button>
+      </div>
+      <p class="atajos">← se va · ↑ aparte · → se queda · Z deshacer</p>
+      <ul id="conteos-review" class="conteos compactos"></ul>
+    </section>
+
+    <section id="pantalla-done" class="pantalla" hidden>
+      <header class="marca">
+        <p class="eyebrow">Listo esta carpeta</p>
+        <h1>No quedan fotos por revisar acá.</h1>
+        <p class="lead">Elegí otro resultado <code>*_clasificado</code> para seguir acumulando en las mismas 3 carpetas.</p>
+      </header>
+      <ul id="conteos-done" class="conteos grandes"></ul>
+      <div class="done-actions">
+        <button type="button" id="btn-otra" class="btn-pri">Elegir otra carpeta</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="modal" class="modal" hidden>
+    <div class="modal-card">
+      <header>
+        <h2 id="modal-titulo">Elegir carpeta</h2>
+        <button type="button" id="modal-cerrar" class="btn-ghost">Cerrar</button>
+      </header>
+      <div class="breadcrumbs">
+        <button type="button" id="btn-padre" class="btn-sec">← Subir</button>
+        <code id="modal-path" class="path-box"></code>
+      </div>
+      <div id="shortcuts" class="chips"></div>
+      <p id="modal-fotos" class="hint"></p>
+      <ul id="lista-dirs" class="lista-dirs"></ul>
+      <footer>
+        <button type="button" id="btn-usar-carpeta" class="btn-pri">Usar esta carpeta</button>
+      </footer>
+    </div>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

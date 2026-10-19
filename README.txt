@@ -2,8 +2,53 @@
  CLASIFICADOR DE FOTOS - Guia paso a paso (Windows y Mac)
 =========================================================
 
-Que hace este programa
------------------------
+DOS PASOS: consola primero, Tinder despues
+------------------------------------------
+1) La clasificacion CON IA sigue siendo por consola
+   (ejecutar.bat / Clasificar Fotos.app / ejecutar.command).
+   Deja una carpeta al lado de la original, con "_clasificado":
+
+     explicito/         -> la IA las marco como explicitas
+     no_explicito/      -> la IA las dio por seguras
+     revisar_manual/    -> la IA no estuvo segura
+
+2) El front Tinder actua SOBRE ESE RESULTADO, no sobre las fotos crudas.
+   Sirve para lo que queda: partir las explicitas en "guardar" o "borrar",
+   y decidir las dudosas. Podes repetirlo con varios *_clasificado y todo
+   se acumula en UN destino con 3 carpetas:
+
+  Se queda  (flecha derecha / swipe a la derecha)
+      -> en realidad es normal, o una dudosa que se queda
+      -> carpeta destino/normales/
+
+  Aparte    (flecha arriba / swipe hacia arriba)
+      -> explicita que queres CONSERVAR
+      -> carpeta destino/explicitas_guardar/
+
+  Se va     (flecha izquierda / swipe a la izquierda)
+      -> explicita que queres BORRAR despues
+      -> carpeta destino/explicitas_borrar/
+
+Las no_explicito de la consola no pasan por Tinder (ya estan resueltas).
+En el front hay un tilde para sumarlas de una al cumulo de normales.
+
+Nada se borra solo; "Se va" las aparta para que vos borres esa carpeta
+cuando estes seguro.
+
+Windows: doble clic en "ejecutar_web.bat"
+Mac:     doble clic en "ejecutar_web.command"
+
+Se abre el navegador en http://127.0.0.1:5055
+1. Confirmá la carpeta destino (el cumulo final de las 3 acciones).
+2. Elegí la carpeta *_clasificado que salio de la consola.
+3. Revisá lo pendiente. Cuando termines, elegí otro *_clasificado;
+   el destino no se reinicia.
+
+Atajos: flechas del teclado, Z para deshacer.
+
+
+MODO AUTOMATICO CON IA (paso 1, consola)
+------------------------------------
 Recorre una carpeta (y todas sus subcarpetas) buscando fotos,
 analiza cada una con un modelo de IA que corre en tu propia PC
 (no sube nada a internet) y las mueve a carpetas separadas:
@@ -25,9 +70,12 @@ Que archivos tenes que copiar al pendrive
 De esta carpeta, copia SOLO estos archivos y pegalos en el pendrive:
 
   clasificar_fotos.py
+  webapp.py
+  static/          (toda la carpeta)
   requirements.txt
   instalar.bat
   ejecutar.bat
+  ejecutar_web.bat
   README.txt   (este archivo)
 
 NO copies la carpeta ".venv" si existe: es especifica de Mac y no
@@ -39,7 +87,7 @@ PASO 1 - Llevar los archivos a la PC con Windows
 1. Conecta el pendrive a la PC con Windows.
 2. Crea una carpeta en el Escritorio o en Documentos, por ejemplo:
    "ClasificadorFotos"
-3. Copia ahi adentro los 5 archivos del pendrive (los listados arriba).
+3. Copia ahi adentro los archivos del pendrive (los listados arriba).
 
 Importante: no ejecutes el programa directamente desde el pendrive,
 va a ser mucho mas lento. Siempre copia primero al disco de la PC.
@@ -91,6 +139,9 @@ PASO 3 - Usar el programa (cada vez que quieras clasificar fotos)
    ya queda guardado en la PC y no se vuelve a descargar.
 5. Al terminar te muestra un resumen: cuantas fotos fueron a cada
    categoria.
+6. Recien ahi, doble clic en "ejecutar_web.bat" para revisar en el
+   navegador lo que queda (explicito + revisar_manual) y acumularlo
+   en las 3 carpetas finales.
 
 
 Notas importantes
@@ -175,6 +226,11 @@ original, con el mismo nombre y "_clasificado" al final:
 
 Alternativa sin la app: doble clic en "ejecutar.command",
 arrastra la carpeta a la ventana de la Terminal y presiona Enter.
+
+Paso siguiente (lo que queda): doble clic en "ejecutar_web.command"
+y en el navegador elegí "Vacaciones_clasificado". Ahi revisas a mano
+explicito y revisar_manual; las no_explicito se pueden sumar de una
+al cumulo de normales.
 
 
 La primera vez

@@ -4,3 +4,4 @@ tf_keras
 pillow
 pillow-heif
 tqdm
+flask
