@@ -109,6 +109,10 @@ code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
   color: #d7d7e2;
 }
 .path-box.vacio { color: var(--muted); }
+input.path-box {
+  color: var(--text);
+  outline: none;
+}
 
 .btn-pri, .btn-sec, .btn-ghost {
   border: 0;

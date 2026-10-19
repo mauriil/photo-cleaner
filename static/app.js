@@ -30,6 +30,8 @@ const ui = {
   shortcuts: $("#shortcuts"),
   modalFotos: $("#modal-fotos"),
   btnPadre: $("#btn-padre"),
+  formRuta: $("#form-ruta"),
+  inputRuta: $("#input-ruta"),
   resumenConsola: $("#resumen-consola"),
   labelPasar: $("#label-pasar"),
   pasarNormales: $("#pasar-normales"),
@@ -185,6 +187,7 @@ async function explorar(path) {
   const data = await api(`/api/explorar${qs}`);
   browsePath = data.path;
   ui.modalPath.textContent = data.path;
+  ui.inputRuta.value = data.path;
   ui.btnPadre.disabled = !data.parent;
   ui.btnPadre.dataset.parent = data.parent || "";
   if (data.consola) {
@@ -307,6 +310,11 @@ $("#modal-cerrar").addEventListener("click", () => (ui.modal.hidden = true));
 $("#btn-usar-carpeta").addEventListener("click", usarCarpetaActual);
 ui.btnPadre.addEventListener("click", () => {
   if (ui.btnPadre.dataset.parent) explorar(ui.btnPadre.dataset.parent);
+});
+ui.formRuta.addEventListener("submit", (ev) => {
+  ev.preventDefault();
+  const ruta = ui.inputRuta.value.trim();
+  if (ruta) explorar(ruta).catch((err) => alert(err.message));
 });
 ui.listaDirs.addEventListener("click", (ev) => {
   const btn = ev.target.closest("button[data-path]");
