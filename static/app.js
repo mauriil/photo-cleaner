@@ -136,9 +136,17 @@ async function empezar() {
   }
 }
 
+function resaltarTecla(accion) {
+  const btn = document.querySelector(`[data-accion="${accion}"]`);
+  if (!btn) return;
+  btn.classList.add("tecla");
+  window.setTimeout(() => btn.classList.remove("tecla"), 160);
+}
+
 async function actuar(accion, direccion) {
   if (ocupado || ui.review.hidden) return;
   ocupado = true;
+  resaltarTecla(accion);
   volar(direccion);
   try {
     const data = await api("/api/accion", { method: "POST", body: JSON.stringify({ accion }) });
@@ -328,18 +336,41 @@ document.querySelectorAll("[data-accion]").forEach((btn) => {
   btn.addEventListener("click", () => {
     const map = { normales: "right", explicitas_guardar: "up", explicitas_borrar: "left" };
     actuar(btn.dataset.accion, map[btn.dataset.accion]);
+    btn.blur();
   });
 });
-window.addEventListener("keydown", (ev) => {
-  if (!ui.modal.hidden) return;
-  if (ev.key === "ArrowRight") actuar("normales", "right");
-  if (ev.key === "ArrowLeft") actuar("explicitas_borrar", "left");
-  if (ev.key === "ArrowUp") {
-    ev.preventDefault();
-    actuar("explicitas_guardar", "up");
+
+function teclaEnCampo(ev) {
+  const el = ev.target;
+  if (!el || el === document.body || el === document.documentElement) return false;
+  const tag = (el.tagName || "").toUpperCase();
+  return tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || el.isContentEditable;
+}
+
+function onKey(ev) {
+  if (ev.repeat || ev.metaKey || ev.ctrlKey || ev.altKey) return;
+  if (!ui.modal.hidden || teclaEnCampo(ev) || ui.review.hidden) return;
+
+  const key = ev.key;
+  const code = ev.code;
+  const atajos = [
+    { accion: "explicitas_borrar", dir: "left", keys: ["ArrowLeft", "a", "A"], codes: ["KeyA"] },
+    { accion: "normales", dir: "right", keys: ["ArrowRight", "d", "D"], codes: ["KeyD"] },
+    { accion: "explicitas_guardar", dir: "up", keys: ["ArrowUp", "w", "W"], codes: ["KeyW"] },
+  ];
+  for (const atajo of atajos) {
+    if (atajo.keys.includes(key) || atajo.codes.includes(code)) {
+      ev.preventDefault();
+      actuar(atajo.accion, atajo.dir);
+      return;
+    }
   }
-  if (ev.key.toLowerCase() === "z") deshacer();
-});
+  if (key === "z" || key === "Z" || key === "Backspace" || code === "KeyZ") {
+    ev.preventDefault();
+    deshacer();
+  }
+}
+window.addEventListener("keydown", onKey, true);
 
 bindSwipe();
 refresh().catch((err) => {

@@ -262,10 +262,25 @@ input.path-box {
 }
 .fab span { font-size: 1.5rem; line-height: 1; }
 .fab small { font-size: 0.7rem; letter-spacing: 0.04em; }
+.fab kbd {
+  font: 700 0.62rem/1 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  opacity: 0.78;
+  letter-spacing: 0.04em;
+}
+.fab.tecla { box-shadow: 0 0 0 4px #fff, 0 10px 24px rgba(0, 0, 0, 0.35); }
 .fab-no { background: var(--no); }
-.fab-apart { background: var(--apart); width: 72px; height: 72px; align-self: center; margin-top: 12px; }
+.fab-apart { background: var(--apart); width: 78px; height: 78px; align-self: center; margin-top: 8px; }
 .fab-keep { background: var(--keep); }
 .atajos { text-align: center; color: var(--muted); font-size: 0.85rem; }
+.atajos kbd, .acciones-legend kbd {
+  display: inline-block;
+  padding: 1px 6px;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: #101016;
+  font: 700 0.78rem/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  color: var(--text);
+}
 
 .done-actions { margin-top: 22px; max-width: 360px; }
 

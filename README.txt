@@ -44,7 +44,11 @@ Se abre el navegador en http://127.0.0.1:5055
 3. Revisá lo pendiente. Cuando termines, elegí otro *_clasificado;
    el destino no se reinicia.
 
-Atajos: flechas del teclado, Z para deshacer.
+Atajos de teclado (mismo gesto que el swipe):
+  flecha izquierda o A  -> Se va
+  flecha arriba    o W  -> Aparte
+  flecha derecha   o D  -> Se queda
+  Z o Backspace         -> deshacer
 
 
 MODO AUTOMATICO CON IA (paso 1, consola)
