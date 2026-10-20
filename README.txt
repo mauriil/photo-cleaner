@@ -4,6 +4,8 @@
 
 DOS PASOS: consola primero, Tinder despues
 ------------------------------------------
+(Hay un tercer paso opcional, el PULIDO FINAL, explicado mas abajo.)
+
 1) La clasificacion CON IA sigue siendo por consola
    (ejecutar.bat / Clasificar Fotos.app / ejecutar.command).
    Deja una carpeta al lado de la original, con "_clasificado":
@@ -75,6 +77,59 @@ falta Node, el build ya esta en static/):
   npm run build   -> regenera static/
 
 
+PASO 3 (OPCIONAL) - PULIDO FINAL con NudeNet + OpenCLIP
+---------------------------------------------------------
+Para cuando ya tenes todo ordenado en una carpeta y queres una ultima
+pasada que encuentre lo que se escapo:
+
+  - explicitas que no vio el paso 1 (NudeNet mira partes del cuerpo
+    expuestas; CLIP tambien busca contenido sexual y zoofilia),
+  - documentos, facturas, DNI, paginas escaneadas,
+  - capturas de pantalla y chats,
+  - tapas de CD / DVD / peliculas / libros,
+  - memes, dibujos y logos.
+
+Todo corre en tu PC, no sube nada a internet. La PRIMERA vez descarga
+el modelo de CLIP (unos 600 MB); despues queda guardado.
+
+Windows: solta la carpeta sobre "pulir.bat" (o doble clic y pega la ruta).
+Mac:     doble clic en "pulir.command" y arrastra la carpeta a la Terminal.
+
+Deja una carpeta al lado, con "_pulido" al final, que el Tinder ya
+sabe leer (igual que un _clasificado):
+
+  explicito/        -> casi seguro explicita
+  revisar_manual/   -> documento, captura, tapa, meme o explicita dudosa
+  no_explicito/     -> foto normal
+  motivos_pulido.json -> el porque de cada foto marcada
+
+Las subcarpetas que ya tenias se respetan tal cual (no se vuelve a
+ordenar por fecha). Las fotos que no se pueden abrir quedan en el
+origen sin tocar. Si se corta a la mitad, volve a correrlo: sigue con
+las que faltan.
+
+Despues abri el Tinder (ejecutar_web) y elegi la carpeta *_pulido.
+En cada tarjeta, abajo de "IA: ...", aparece el motivo (por ejemplo
+"CLIP: tapa de disco / pelicula (98%)" o "NudeNet: ... (81%)").
+Tilda "Sumar las no explicitas directo al cumulo de normales/" para
+pasar de una todas las fotos normales. En las marcadas que no son explicitas (documentos, tapas...)
+"Se va" las aparta en explicitas_borrar/ igual: es la pila de "borrar".
+
+IMPORTANTE: si la carpeta que puliste estaba DENTRO del destino del
+Tinder (por ejemplo FotosClasificadas/normales), en el Tinder elegi
+un destino NUEVO (por ejemplo FotosFinales). El programa te avisa.
+
+Si ya tenias instalado el programa antes de este paso, hay que volver
+a instalar las dependencias UNA vez (suma PyTorch, ~1 GB en disco):
+  Windows: doble clic en "instalar.bat" de nuevo.
+  Mac:     uv pip install --python .venv/bin/python -r requirements.txt
+
+Para ajustar que tan estricto es, abri "pulir_fotos.py" con el Bloc de
+notas: al principio estan los umbrales (UMBRALES_NUDENET,
+UMBRALES_NO_FOTO, UMBRAL_CLIP_SEXUAL...) y las frases que usa CLIP en
+CATEGORIAS_CLIP. Valores mas bajos marcan mas fotos.
+
+
 MODO AUTOMATICO CON IA (paso 1, consola)
 ------------------------------------
 Recorre una carpeta (y todas sus subcarpetas) buscando fotos,
@@ -98,12 +153,14 @@ Que archivos tenes que copiar al pendrive
 De esta carpeta, copia SOLO estos archivos y pegalos en el pendrive:
 
   clasificar_fotos.py
+  pulir_fotos.py
   webapp.py
   static/          (toda la carpeta)
   requirements.txt
   instalar.bat
   ejecutar.bat
   ejecutar_web.bat
+  pulir.bat
   README.txt   (este archivo)
 
 NO copies la carpeta ".venv" si existe: es especifica de Mac y no

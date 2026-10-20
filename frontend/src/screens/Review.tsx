@@ -73,6 +73,11 @@ function Foto({ foto, active }: { foto: FotoMeta; active: boolean }) {
         <span className="size-1.5 rounded-full" style={{ background: `rgb(${cat.rgb})`, boxShadow: `0 0 8px rgb(${cat.rgb})` }} />
         IA: {cat.corto}
       </span>
+      {foto.motivo ? (
+        <span className="absolute left-4 top-12 max-w-[calc(100%-2rem)] truncate rounded-full bg-black/50 px-2.5 py-1 text-[11px] font-medium text-white/85 backdrop-blur-md" title={foto.motivo}>
+          {foto.motivo}
+        </span>
+      ) : null}
       {active ? (
         <div className="absolute inset-x-0 bottom-0 p-5">
           <p className="truncate text-base font-semibold text-white">{foto.nombre}</p>

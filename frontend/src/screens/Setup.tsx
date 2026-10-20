@@ -168,7 +168,7 @@ export function Setup({
               <span className="min-w-0 flex-1">
                 <span className="block text-sm font-medium">{inspeccion ? "Carpeta elegida" : "Elegir carpeta con fotos"}</span>
                 <span className="block truncate font-mono text-xs text-ink-3" title={inspeccion?.root}>
-                  {inspeccion?.root ?? "Un *_clasificado, o la carpeta madre con varios adentro"}
+                  {inspeccion?.root ?? "Un *_clasificado o *_pulido, o la carpeta madre con varios adentro"}
                 </span>
               </span>
               <span className="text-xs text-ink-3 group-hover:text-ink">{inspeccion ? "Cambiar" : "Explorar"}</span>
