@@ -3,3 +3,5 @@ venv_windows/
 __pycache__/
 *.pyc
 .clasificar_fotos/
+frontend/node_modules/
+.DS_Store

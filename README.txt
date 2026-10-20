@@ -14,8 +14,22 @@ DOS PASOS: consola primero, Tinder despues
 
 2) El front Tinder actua SOBRE ESE RESULTADO, no sobre las fotos crudas.
    Sirve para lo que queda: partir las explicitas en "guardar" o "borrar",
-   y decidir las dudosas. Podes repetirlo con varios *_clasificado y todo
-   se acumula en UN destino con 3 carpetas:
+   y decidir las dudosas.
+
+   Podes elegir:
+     - un *_clasificado puntual,
+     - la carpeta original (detecta la vecina _clasificado), o
+     - una CARPETA MADRE con todas tus imagenes: busca a cualquier
+       profundidad cada lote que tenga subcarpetas de categoria y los
+       revisa todos en una sola pila.
+
+   Nombres de categoria aceptados (mayusculas, espacios y guiones da igual):
+     explicito      / explicit
+     no_explicito   / non-explicit, not-explicit, safe
+     revisar_manual / force-revisit, revisit, review
+
+   Todo se acumula en UN destino con 3 carpetas, respetando el lote y
+   las subcarpetas originales (ej. normales/Pendrive/Camara/2024/2024-07/):
 
   Se queda  (flecha derecha / swipe a la derecha)
       -> en realidad es normal, o una dudosa que se queda
@@ -30,6 +44,8 @@ DOS PASOS: consola primero, Tinder despues
       -> carpeta destino/explicitas_borrar/
 
 Las no_explicito de la consola no pasan por Tinder (ya estan resueltas).
+Si elegis directamente una subcarpeta de categoria (ej. revisar_manual/)
+solo se revisa esa.
 En el front hay un tilde para sumarlas de una al cumulo de normales.
 
 Nada se borra solo; "Se va" las aparta para que vos borres esa carpeta
@@ -49,6 +65,14 @@ Atajos de teclado (mismo gesto que el swipe):
   flecha arriba    o W  -> Aparte
   flecha derecha   o D  -> Se queda
   Z o Backspace         -> deshacer
+Tambien podes arrastrar la foto con el mouse (o el dedo) hacia
+izquierda, arriba o derecha.
+
+Desarrollo del front (solo si queres modificarlo; para USARLO no hace
+falta Node, el build ya esta en static/):
+  cd frontend && npm install
+  npm run dev     -> http://localhost:5173 (con webapp.py corriendo)
+  npm run build   -> regenera static/
 
 
 MODO AUTOMATICO CON IA (paso 1, consola)
