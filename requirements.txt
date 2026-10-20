@@ -5,3 +5,5 @@ pillow
 pillow-heif
 tqdm
 flask
+open_clip_torch
+nudenet

@@ -30,6 +30,8 @@ export type FotoMeta = {
   subcarpeta: string;
   preview: string;
   categoria_consola: CategoriaConsola;
+  /** Por qué la marcó el pulido (NudeNet / CLIP); null si vino de la consola. */
+  motivo?: string | null;
 };
 
 export type Estado = {

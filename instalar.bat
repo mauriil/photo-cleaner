@@ -99,5 +99,6 @@ echo.
 echo === Instalacion completa ===
 echo A partir de ahora, para el modo Tinder hace doble clic en "ejecutar_web.bat"
 echo Para el modo automatico con IA, usa "ejecutar.bat"
+echo Para el pulido final ^(paso 3^), usa "pulir.bat"
 echo.
 pause

@@ -72,6 +72,11 @@ ALIAS_CATEGORIAS = {
     },
 }
 
+# Sufijos de las carpetas que dejan la consola (paso 1) y el pulido (paso 3).
+SUFIJOS_LOTE = ("_clasificado", "_pulido")
+# El pulido deja, en la raíz del lote, el porqué de cada foto marcada.
+ARCHIVO_MOTIVOS = "motivos_pulido.json"
+
 CONFIG_PATH = Path.home() / ".clasificar_fotos" / "config.json"
 DESTINO_POR_DEFECTO = Path.home() / "FotosClasificadas"
 MAX_PREVIEWS_EXTRA = 2
@@ -156,7 +161,7 @@ def es_resultado_consola(ruta: Path) -> bool:
 
 
 def etiqueta_lote(lote: Path, raiz: Path) -> str:
-    """Nombre del lote dentro del cúmulo: ruta relativa a la raíz elegida, sin el sufijo _clasificado."""
+    """Nombre del lote dentro del cúmulo: ruta relativa a la raíz elegida, sin el sufijo _clasificado / _pulido."""
     try:
         partes = list(lote.relative_to(raiz).parts)
     except ValueError:
@@ -164,9 +169,19 @@ def etiqueta_lote(lote: Path, raiz: Path) -> str:
     if not partes:
         partes = [lote.name]
     ultimo = partes[-1]
-    if ultimo.endswith("_clasificado") and len(ultimo) > len("_clasificado"):
-        partes[-1] = ultimo[: -len("_clasificado")]
+    for sufijo in SUFIJOS_LOTE:
+        if ultimo.endswith(sufijo) and len(ultimo) > len(sufijo):
+            partes[-1] = ultimo[: -len(sufijo)]
+            break
     return "/".join(partes)
+
+
+def cargar_motivos(lote: Path) -> dict[str, str]:
+    try:
+        data = json.loads((lote / ARCHIVO_MOTIVOS).read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return {}
+    return {str(k): str(v) for k, v in data.items()} if isinstance(data, dict) else {}
 
 
 @dataclass
@@ -174,10 +189,16 @@ class Lote:
     path: Path
     etiqueta: str
     categorias: dict[str, list[Path]] = field(default_factory=dict)
+    motivos: dict[str, str] = field(default_factory=dict)
 
     @classmethod
     def desde(cls, path: Path, raiz: Path) -> "Lote":
-        return cls(path=path, etiqueta=etiqueta_lote(path, raiz), categorias=categorias_en(path))
+        return cls(
+            path=path,
+            etiqueta=etiqueta_lote(path, raiz),
+            categorias=categorias_en(path),
+            motivos=cargar_motivos(path),
+        )
 
 
 @dataclass
@@ -217,14 +238,15 @@ def resolver_resultado_consola(ruta: Path, destino: Path | None = None) -> tuple
     lotes = descubrir_lotes(ruta, destino)
     if lotes:
         return ruta, lotes, None
-    vecino = ruta.parent / f"{ruta.name}_clasificado"
-    if vecino.is_dir() and es_resultado_consola(vecino):
-        return vecino, [Lote.desde(vecino, vecino)], None
+    for sufijo in SUFIJOS_LOTE:
+        vecino = ruta.parent / f"{ruta.name}{sufijo}"
+        if vecino.is_dir() and es_resultado_consola(vecino):
+            return vecino, [Lote.desde(vecino, vecino)], None
     raise ValueError(
         "No encontré resultados de la consola acá adentro. "
         "Elegí una carpeta que tenga subcarpetas explicito / no_explicito / revisar_manual "
         "(o explicit / non-explicit / force-revisit), a cualquier profundidad, "
-        "o la carpeta original: detecto la vecina _clasificado."
+        "o la carpeta original: detecto la vecina _clasificado o _pulido."
     )
 
 
@@ -478,6 +500,7 @@ class Sesion:
             "subcarpeta": "/".join(item.relativo.parts[:-1]),
             "preview": f"/api/preview/{item.id}",
             "categoria_consola": item.categoria,
+            "motivo": item.lote.motivos.get("/".join((item.categoria, *item.relativo.parts))),
         }
 
     def aplicar(self, accion: str) -> dict:
@@ -645,7 +668,7 @@ def api_explorar():
         categoria = categoria_de(hijo.name)
         if categoria:
             item["categoria"] = categoria
-        elif hijo.name.endswith("_clasificado") or es_resultado_consola(hijo):
+        elif hijo.name.endswith(SUFIJOS_LOTE) or es_resultado_consola(hijo):
             item["es_resultado_consola"] = True
         dirs.append(item)
 
@@ -702,8 +725,8 @@ def main() -> None:
     port = int(os.environ.get("CLASIFICAR_PORT", "5055"))
     url = f"http://127.0.0.1:{port}"
     print("=== Revisión Tinder (post-consola) ===")
-    print("Esto NO clasifica con IA: actúa sobre lo que dejó ejecutar.bat / Clasificar Fotos.app.")
-    print("Podés elegir un *_clasificado o una carpeta madre con varios adentro.")
+    print("Esto NO clasifica con IA: actúa sobre lo que dejó ejecutar.bat / Clasificar Fotos.app (o pulir).")
+    print("Podés elegir un *_clasificado, un *_pulido o una carpeta madre con varios adentro.")
     print(f"Abrí esta dirección en el navegador: {url}")
     print("Revisa lo que queda (explicito + revisar_manual) y se acumula en:")
     print(f"  {sesion.destino}")
